@@ -12,6 +12,9 @@
 #include <GxEPD2_BW.h> // including both doesn't hurt
 #include <GxEPD2_3C.h> // including both doesn't hurt
 
+#define MAX_UL 0xFFFFFFFFUL
+
+#define WEMOS_A0     17
 #define WEMOS_D0     16
 #define WEMOS_D1     5
 #define WEMOS_D2     4
@@ -28,10 +31,15 @@
 #define TFT_DC   WEMOS_D3
 #define TFT_RST  WEMOS_D1
 
+unsigned long mainMillis() {
+  return  millis() + (MAX_UL - 30000UL);
+}
+
 void setup()
 {
   wemosSetup();
   ledSetup();
+  liionSetup();
   wifiSetup();
   timeSetup();
   einkSetup();
@@ -41,9 +49,22 @@ void setup()
 }
 
 void loop() {
+  unsigned long startMillis = mainMillis();
+
   srLoop();
   dbgLoop();
   einkLoop();
-  delay(60000);
-  //display.display(false); // full update
+  
+  unsigned long endMillis = mainMillis();
+  unsigned long executionTime;
+  if (endMillis < startMillis) {
+    executionTime = MAX_UL - startMillis;
+    executionTime += endMillis + 1;
+  } else {
+    executionTime = endMillis - startMillis;
+  }
+
+  if (executionTime < 1000UL) {
+    delay(1000UL - executionTime);
+  }
 }

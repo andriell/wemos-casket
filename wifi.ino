@@ -47,18 +47,23 @@ void wifiLoop()
 // 2. Low quality: 30% ~= -85db
 // 1. Unusable quality: 8% ~= -96db
 // 0. No signal
-int getBarsSignal(long rssi){
+int wifiSignal(){
   long rssi = WiFi.RSSI();
+  int r = 0;
   if (rssi > -55) { 
-    return 5;
+    r = 5;
   } else if (rssi > -65) {
-    return 4;
+    r = 4;
   } else if (rssi > -75) {
-    return 3;
+    r = 3;
   } else if (rssi > -85) {
-    return 2;
+    r = 2;
   } else if (rssi > -96) {
-    return 1;
+    r = 1;
   }
-  return 0;
+  dbg(1, "RSSI: ");
+  dbg(1, rssi);
+  dbg(1, "db; lavel: ");
+  dbgLn(1, r);
+  return r;
 }

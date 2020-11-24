@@ -31,6 +31,8 @@ GxEPD2_BW<GxEPD2_154_D67, GxEPD2_154_D67::HEIGHT> display(GxEPD2_154_D67(/*CS=D8
 // CLK  - D5
 // BUSY - D2
 
+#define EINK_PERIOD 60
+int einkLoopCount = EINK_PERIOD;
 
 void einkSetup()
 {
@@ -39,9 +41,18 @@ void einkSetup()
 
 void einkLoop()
 {
+  einkLoopCount++;
+  if (einkLoopCount < EINK_PERIOD) {
+    return;
+  }
+  einkLoopCount = 0;
+
   String strHMDM = timeHMDMString();
   String strHM = timeHMString();
   String strDM = timeDMString();
+  String strP = String(liionP()) + "%";
+
+  int16_t tbx, tby; uint16_t tbw, tbh;
 
   display.setRotation(1);
   display.setTextColor(GxEPD_BLACK);
@@ -50,6 +61,28 @@ void einkLoop()
   do
   {
     display.fillScreen(GxEPD_WHITE);
+
+    int wifiS = wifiSignal();
+    if (wifiS > 0) {
+      display.fillRect(176, 16, 4, 4,  GxEPD_BLACK);
+    }
+    if (wifiS > 1) {
+      display.fillRect(181, 12, 4, 8,  GxEPD_BLACK);
+    }
+    if (wifiS > 2) {
+      display.fillRect(186, 8,  4, 12, GxEPD_BLACK);
+    }
+    if (wifiS > 3) {
+      display.fillRect(191, 4,  4, 16, GxEPD_BLACK);
+    }
+    if (wifiS > 4) {
+      display.fillRect(196, 0,  4, 20, GxEPD_BLACK);
+    }
+
+    display.setFont(&FreeSans12pt7b);
+    display.getTextBounds(strP, 0, 0, &tbx, &tby, &tbw, &tbh);
+    display.setCursor(172 - tbw - tbx, 20);
+    einkPrint(strP);
 
     display.setFont(&FreeSans12pt7b);
     display.setCursor(3, 20);
@@ -60,7 +93,8 @@ void einkLoop()
     einkPrint(strHM);
 
     display.setFont(&FreeSans12pt7b);
-    display.setCursor(124, 116);
+    display.getTextBounds(strDM, 0, 0, &tbx, &tby, &tbw, &tbh);
+    display.setCursor(200 - tbw - tbx, 116);
     einkPrint(strDM);
 
     display.setFont(&lucon9pt7b);
@@ -72,23 +106,23 @@ void einkLoop()
     einkPrint(strHMDM);
   }
   while (display.nextPage());
-
+  //display.hibernate();
   display.powerOff();
 }
 void einkPrint(String s) {
   int16_t tbx, tby; uint16_t tbw, tbh;
   display.getTextBounds(s, 0, 0, &tbx, &tby, &tbw, &tbh);
-  dbg(2, "String:");
+  dbg(2, "String: ");
   dbg(2, s);
-  dbg(2, " x:");
+  dbg(2, "; x:");
   dbg(2, tbx);
-  dbg(2, " y:");
+  dbg(2, "; y:");
   dbg(2, tby);
-  dbg(2, " w:");
+  dbg(2, "; w:");
   dbg(2, tbw);
-  dbg(2, " h:");
+  dbg(2, "; h:");
   dbg(2, tbh);
-  dbg(2, " xc:");
+  dbg(2, "; xc:");
   dbgLn(2, ((display.width() - tbw) / 2) - tbx);
   display.print(s);
 }
