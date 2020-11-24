@@ -1,11 +1,3 @@
-#include <gfxfont.h>
-const String const_str_empty = String("");
-const String const_str_dbg = String("dbg");
-const String const_str_ip = String("ip");
-const String const_str_port = String("port");
-const String const_str_data = String("data");
-
-// lucon9pt7b start
 const uint8_t lucon9pt7bBitmaps[] PROGMEM = {
   0x00, 0xFF, 0xFF, 0xC3, 0xC0, 0xCF, 0x3C, 0xF3, 0xCC, 0x04, 0x81, 0x20,
   0x90, 0x24, 0x7F, 0xC2, 0x40, 0xA0, 0x48, 0xFF, 0xC4, 0x81, 0x20, 0x90,
@@ -209,4 +201,3 @@ const GFXfont lucon9pt7b PROGMEM = {
   0x20, 0x7E, 18 };
 
 // Approx. 1845 bytes
-// lucon9pt7b end

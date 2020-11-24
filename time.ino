@@ -10,6 +10,34 @@ char *timeServerList[] = {
   "time-b.timefreq.bldrdoc.gov",
   "time-c.timefreq.bldrdoc.gov"
 };
+/*char *timeMonths[] = {
+  "янв.",
+  "фев.",
+  "мар.",
+  "апр.",
+  "май.",
+  "июн.",
+  "июл.",
+  "авг.",
+  "сен.",
+  "окт.",
+  "ноя.",
+  "дек.",
+};*/
+char *timeMonths[] = {
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+};
 int timeServerListLenght = 8;
 
 
@@ -21,8 +49,8 @@ void timeSetup() {
 boolean timeUpdate() {
   for (int i = 0; i < timeServerListLenght; i++) {
     time_t t = timeNtpTime(timeServerList[i]);
-    if (t > 0) {
-      setTime(t);
+    setTime(t);
+    if (year() > 2000) {
       dbg(1, "Time: ");
       dbgLn(1, timeString());
       return true;
@@ -35,6 +63,37 @@ boolean timeUpdate() {
 String timeString() {
   static char str[19];
   sprintf(str, "%02d:%02d:%02d %02d-%02d-%04d", hour(), minute(), second(), day(), month(), year());
+  return String(str);
+}
+
+String timeHMDMString() {
+  static char str[12];
+  sprintf(str, "%02d:%02d %02d %3s ", hour(), minute(), day(), timeMonths[month() - 1]);
+  return String(str);
+}
+
+
+String timeHMString() {
+  static char str[5];
+  sprintf(str, "%02d:%02d", hour(), minute());
+  return String(str);
+}
+
+String timeHMSString() {
+  static char str[8];
+  sprintf(str, "%02d:%02d:%02d", hour(), minute(), second());
+  return String(str);
+}
+
+String timeDMYString() {
+  static char str[10];
+  sprintf(str, "%02d-%02d-%04d", day(), month(), year());
+  return String(str);
+}
+
+String timeDMString() {
+  static char str[6];
+  sprintf(str, "%02d %3s", day(), timeMonths[month() - 1]);
   return String(str);
 }
 
