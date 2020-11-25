@@ -1,4 +1,4 @@
-// https://forum.arduino.cc/index.php?topic=682683.0
+// https://github.com/robsoncouto/arduino-songs
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include "const.h"
@@ -31,48 +31,63 @@
 #define TFT_DC   WEMOS_D3
 #define TFT_RST  WEMOS_D1
 
-unsigned long mainMillis() {
-  return  millis() + (MAX_UL - 30000UL);
-}
+#define DATA_LIST_SIZE 5
+#define DATA_STR_LENGTH 25
+#define PLAY_SONG_AFTER 30
+
+byte dataPosition = 0;
+String dataList[] = {
+  "1234567890123456789012345",
+  "1234567890123456789012345",
+  "1234567890123456789012345",
+  "1234567890123456789012345",
+  "1234567890123456789012345",
+};
+
+unsigned long sleepTime = 0ul;
 
 void setup()
 {
+  unsigned long startMillis = millis();
   wemosSetup();
+  Serial.println("Wake up");
+  beepSetup();
   ledSetup();
   liionSetup();
-  Serial.print("Time ");
-  Serial.println(timeString());
-  
-  if (year() < 2000) {
-    wifiSetup();
-    timeSetup();
-  }
-  einkSetup();
+  eepromSetup();
   dbgSetup();
+  wifiSetup();
+  timeSetup();
+  einkSetup();
 
   timeUpdate();
+
+  unsigned long soungTime = eepromGetSoungTime();
+  dbg(1, "Now: ");
+  dbg(1, now());
+  dbg(1, " Soung time: ");
+  dbgLn(1, soungTime);
+
+  if (soungTime > 0 && now() > soungTime) {
+    dbgLn(1, "Play song");
+    eepromSetSoungTime(0ul);
+    beepSong3();
+    sleepTime = 0ul;
+  } else {
+    dbgLn(1, "Update time");
+    einkLoop();
+    String strHMDM = timeHMDMString();
+    eepromWrite(strHMDM);
+    eepromSetSoungTime(now() + PLAY_SONG_AFTER - 1);
+    sleepTime = PLAY_SONG_AFTER * 1e6;
+  }
+  wifiDisconnect();
+
+  Serial.print("Execution time ");
+  Serial.println(millis() - startMillis);
 }
 
 void loop() {
-  unsigned long startMillis = mainMillis();
-  Serial.println("Wake up");
-  srLoop();
-  dbgLoop();
-  einkLoop();
-
-  unsigned long endMillis = mainMillis();
-  unsigned long executionTime;
-  if (endMillis < startMillis) {
-    executionTime = MAX_UL - startMillis;
-    executionTime += endMillis + 1;
-  } else {
-    executionTime = endMillis - startMillis;
-  }
-  Serial.print("Execution time ");
-  Serial.println(executionTime);
   Serial.println("Sleep");
-  if (executionTime < 1000UL) {
-    ESP.deepSleep(60e6 - executionTime * 1000);
-    //delay(1000UL - executionTime);
-  }
+  ESP.deepSleep(sleepTime);
 }

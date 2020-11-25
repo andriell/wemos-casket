@@ -89,23 +89,24 @@ void einkLoop()
     //einkPrint(strHM);
 
     display.setFont(&FreeSansBold24pt7b);
-    display.setCursor(0, 116);
+    display.setCursor(0, 70);
     einkPrint(strHM);
 
     display.setFont(&FreeSans12pt7b);
     display.getTextBounds(strDM, 0, 0, &tbx, &tby, &tbw, &tbh);
-    display.setCursor(200 - tbw - tbx, 116);
+    display.setCursor(200 - tbw - tbx, 70);
     einkPrint(strDM);
 
     display.setFont(&lucon9pt7b);
-    display.setCursor(0, 178);
-    einkPrint(strHMDM);
-
-    display.setFont(&lucon9pt7b);
-    display.setCursor(0, 198);
-    einkPrint(strHMDM);
-  }
-  while (display.nextPage());
+    for (int i = 0; i < DATA_LIST_SIZE; i++) {
+      int j = dataPosition - i;
+      if (j < 0) {
+        j += DATA_LIST_SIZE;
+      }
+      display.setCursor(0, 118 + 20 * j);
+      einkPrint(dataList[i]);
+    }
+  }  while (display.nextPage());
   //display.hibernate();
   display.powerOff();
 }

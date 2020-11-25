@@ -67,3 +67,7 @@ int wifiSignal(){
   dbgLn(1, r);
   return r;
 }
+
+void wifiDisconnect() {
+  WiFi.disconnect();
+}
