@@ -40,8 +40,13 @@ void setup()
   wemosSetup();
   ledSetup();
   liionSetup();
-  wifiSetup();
-  timeSetup();
+  Serial.print("Time ");
+  Serial.println(timeString());
+  
+  if (year() < 2000) {
+    wifiSetup();
+    timeSetup();
+  }
   einkSetup();
   dbgSetup();
 
@@ -50,11 +55,11 @@ void setup()
 
 void loop() {
   unsigned long startMillis = mainMillis();
-
+  Serial.println("Wake up");
   srLoop();
   dbgLoop();
   einkLoop();
-  
+
   unsigned long endMillis = mainMillis();
   unsigned long executionTime;
   if (endMillis < startMillis) {
@@ -63,8 +68,11 @@ void loop() {
   } else {
     executionTime = endMillis - startMillis;
   }
-
+  Serial.print("Execution time ");
+  Serial.println(executionTime);
+  Serial.println("Sleep");
   if (executionTime < 1000UL) {
-    delay(1000UL - executionTime);
+    ESP.deepSleep(60e6 - executionTime * 1000);
+    //delay(1000UL - executionTime);
   }
 }

@@ -3,7 +3,7 @@
 int dbgLvl = 2;
 
 void dbgSetup() {
-  dbgLvl = 0;
+  dbgLvl = 2;
   Serial.println("To turn debug level send one of this command");
   Serial.println("dbg0 - turned off");
   Serial.println("dbg1 - general information");

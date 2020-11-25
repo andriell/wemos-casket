@@ -84,9 +84,9 @@ void einkLoop()
     display.setCursor(172 - tbw - tbx, 20);
     einkPrint(strP);
 
-    display.setFont(&FreeSans12pt7b);
-    display.setCursor(3, 20);
-    einkPrint(strHM);
+    //display.setFont(&FreeSans12pt7b);
+    //display.setCursor(3, 20);
+    //einkPrint(strHM);
 
     display.setFont(&FreeSansBold24pt7b);
     display.setCursor(0, 116);

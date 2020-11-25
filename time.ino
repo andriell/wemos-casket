@@ -50,7 +50,7 @@ boolean timeUpdate() {
   for (int i = 0; i < timeServerListLenght; i++) {
     time_t t = timeNtpTime(timeServerList[i]);
     setTime(t);
-    if (year() > 2000) {
+    if (year() >= 2020 && year() <= 2021) {
       dbg(1, "Time: ");
       dbgLn(1, timeString());
       return true;
