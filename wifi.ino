@@ -47,10 +47,10 @@ void wifiLoop()
 // 2. Low quality: 30% ~= -85db
 // 1. Unusable quality: 8% ~= -96db
 // 0. No signal
-int wifiSignal(){
+int wifiSignal() {
   long rssi = WiFi.RSSI();
   int r = 0;
-  if (rssi > -55) { 
+  if (rssi > -55) {
     r = 5;
   } else if (rssi > -65) {
     r = 4;

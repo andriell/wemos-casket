@@ -23,7 +23,7 @@ char *timeServerList[] = {
   "окт.",
   "ноя.",
   "дек.",
-};*/
+  };*/
 char *timeMonths[] = {
   "Jan",
   "Feb",
