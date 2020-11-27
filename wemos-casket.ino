@@ -33,7 +33,7 @@
 
 #define DATA_LIST_SIZE 5
 #define DATA_STR_LENGTH 25
-#define PLAY_SONG_AFTER 30
+#define PLAY_SONG_AFTER 1800
 
 byte dataPosition = 0;
 String dataList[] = {
@@ -50,12 +50,12 @@ void setup()
 {
   unsigned long startMillis = millis();
   wemosSetup();
-  Serial.println("Wake up");
+  dbgSetup();
+  dbgLn(1, "Wake up");
   beepSetup();
   ledSetup();
   liionSetup();
   eepromSetup();
-  dbgSetup();
   wifiSetup();
   timeSetup();
   einkSetup();
@@ -83,11 +83,11 @@ void setup()
   }
   wifiDisconnect();
 
-  Serial.print("Execution time ");
-  Serial.println(millis() - startMillis);
+  dbg(1, "Execution time ");
+  dbgLn(1, millis() - startMillis);
 }
 
 void loop() {
-  Serial.println("Sleep");
+  dbgLn(1, "Sleep");
   ESP.deepSleep(sleepTime);
 }
