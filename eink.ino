@@ -54,7 +54,7 @@ void einkLoop()
 
   int16_t tbx, tby; uint16_t tbw, tbh;
 
-  display.setRotation(1);
+  display.setRotation(3);
   display.setTextColor(GxEPD_BLACK);
   display.setFullWindow();
   display.firstPage();

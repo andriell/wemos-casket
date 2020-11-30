@@ -15,7 +15,9 @@ void wifiConnection() {
 }
 
 void wifiSetup() {
-  WiFi.hostname("Temperature monitor");
+  dbg(1, "MAC: ");
+  dbgLn(1, WiFi.macAddress());
+  WiFi.hostname("Casket");
   WiFi.mode(WIFI_STA);
   WiFi.begin(configWifiSsid, configWifiPassword);
 

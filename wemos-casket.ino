@@ -62,13 +62,16 @@ void setup()
 
   timeUpdate();
 
+  unsigned long nowTime = now();
   unsigned long soungTime = eepromGetSoungTime();
   dbg(1, "Now: ");
-  dbg(1, now());
+  dbg(1, nowTime);
   dbg(1, " Soung time: ");
-  dbgLn(1, soungTime);
+  dbg(1, soungTime);
+  dbg(1, " Now - Soung time: ");
+  dbgLn(1, nowTime - soungTime);
 
-  if (soungTime > 0 && now() > soungTime) {
+  if (soungTime > 0 && nowTime > soungTime) {
     dbgLn(1, "Play song");
     eepromSetSoungTime(0ul);
     beepSong3();
@@ -78,7 +81,9 @@ void setup()
     einkLoop();
     String strHMDM = timeHMDMString();
     eepromWrite(strHMDM);
-    eepromSetSoungTime(now() + PLAY_SONG_AFTER - 1);
+    // Таймер глубокого сна WeMos сильно врет. Идет на 5.8 - 7.4% быстрее.
+    // The WeMos deep sleep timer is lying. Runs 5.8 - 7.4% faster.
+    eepromSetSoungTime(nowTime + (unsigned long) (float(PLAY_SONG_AFTER) * 0.9f));
     sleepTime = PLAY_SONG_AFTER * 1e6;
   }
   wifiDisconnect();
